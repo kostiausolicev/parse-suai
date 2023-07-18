@@ -1,0 +1,14 @@
+*.md
+!README.md
+
+# IDE
+.idea/
+.vscode/
+*.iml
+target/
+*.cmd
+
+# Code
+*.class
+*.jar
+*.properties

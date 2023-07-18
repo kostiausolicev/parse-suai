@@ -1,0 +1,9 @@
+csv_files/
+html_files/
+vectors/
+venv/
+
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
