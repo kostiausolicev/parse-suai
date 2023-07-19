@@ -7,9 +7,9 @@ from fastapi.responses import JSONResponse
 import csv_service
 import html_service
 from responses.ResponseType import ResponseType
-from responses.applicants.ApplicantData import ApplicantData
 import uvicorn
 
+from responses.utils.Utils import Utils
 from responses.vector_list.VectorList import VectorList
 from responses.vectors_inform.VectorData import VectorData
 
@@ -20,8 +20,7 @@ app = FastAPI()
 def find(vtr: str, tg_id: int, snils: str = "", uuid: str = Header(...)):
     result = ResponseType().set_vector_name(vtr).set_uuid(uuid).set_tg_id(tg_id)
     result.set_vector_data(VectorData.parse_json(vtr)). \
-        set_applicant_data(ApplicantData.parse_json(vtr, snils))
-
+        set_applicant_data(Utils.parse_json(vtr, snils))
     return JSONResponse(
         status_code=status.HTTP_200_OK if result.get_applicant_date() is not None or result.get_vector_data() is not None else status.HTTP_400_BAD_REQUEST,
         content=result.to_dict()
@@ -75,4 +74,5 @@ def download_html(vtr: str, tg_id: int, uuid: str = Header(...)):
 
 
 if __name__ == "__main__":
+    # Utils.parse_to_json("09_03_02", "https://priem.guap.ru/lists/1_18_1_1_1_f")
     uvicorn.run(app, host="localhost", port=8000)

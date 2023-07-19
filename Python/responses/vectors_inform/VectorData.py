@@ -85,16 +85,22 @@ class VectorData:
         vector_path = "../Python/vectors/" + vector_name + ".json"
         if not os.path.exists(vector_path):
             return VectorData()
-        with open(vector_path) as file:
-            data = json.load(file)
+        with open(vector_path, encoding="utf-8") as file1:
+            data = json.load(file1)
         abit_list = []
         for count, item in enumerate(data["list"]):
             abit = Applicant()
-            abit_list.append(abit.set_snils(item['snils']).
-                             set_bvi(item['bvi']).
-                             set_additional_points(item['additionalPoints']).
-                             set_points(item['points']).
-                             set_names_profile(item['namesProfile']).
-                             set_original_documents(item['originalDocuments']).
-                             set_consent(item['consent']))
+            try:
+                abit_list.append(abit.set_snils(item['snils']).
+                                 set_priority(item["priority"]).
+                                 set_all_points(item["allPoints"]).
+                                 set_exams_points(item["examsPoints"]).
+                                 set_bvi(item['bvi']).
+                                 set_additional_points(item['additionalPoints']).
+                                 set_points(item['points']).
+                                 set_names_profile(item['namesProfile']).
+                                 set_original_documents(item['originalDocuments']).
+                                 set_consent(item['consent']))
+            except KeyError:
+                continue
         return result.set_vector(abit_list)
