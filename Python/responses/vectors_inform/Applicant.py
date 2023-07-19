@@ -1,11 +1,11 @@
 class Applicant:
     def __init__(self):
         self.snils = None
-        self.bvi = False
         self.priority = None
-        self.examsPoints = None
         self.allPoints = None
+        self.examsPoints = None
         self.additionalPoints = None  # дополнительные баллы
+        self.bvi = False
         self.points = None  # баллы за экзамены
         self.namesProfile = None  # названия предметов
         self.originalDocuments = False

@@ -2,13 +2,13 @@ def convert_json_to_html(json_file_path, html_file_path):
     import json
 
     # Чтение JSON из файла
-    with open(json_file_path, 'r') as json_file:
+    with open(json_file_path, 'r', encoding="utf-8") as json_file:
         data = json.load(json_file)
 
     # Открытие HTML-файла для записи
-    with open(html_file_path, 'w') as file:
+    with open(html_file_path, 'w', encoding="utf-8") as file:
         # Запись заголовка HTML-файла
-        file.write('<html><head><title>Vector Data</title></head><body>')
+        file.write('<html><head><title>Vector Data</title><meta charset="utf-8"></head><body>')
 
         # Запись даты обновления в начало страницы
         file.write(f'<h1>Дата обновления: {data["update"]}</h1>')
@@ -24,8 +24,10 @@ def convert_json_to_html(json_file_path, html_file_path):
             file.write(f'<tr>')
             file.write(f'<td>{i + 1}</td>')
             file.write(f'<td>{item["snils"]}</td>')
-            file.write(f'<td>{item["bvi"]}</td>')
+            file.write(f'<td>{item["allPoints"]}</td>')
+            file.write(f'<td>{item["examsPoints"]}</td>')
             file.write(f'<td>{item["additionalPoints"]}</td>')
+            file.write(f'<td>{item["bvi"]}</td>')
             file.write(f'<td>{item["points"]}</td>')
             file.write(f'<td>{item["namesProfile"]}</td>')
             file.write(f'<td>{item["originalDocuments"]}</td>')
