@@ -1,19 +1,52 @@
 import json
 import os
 
+from responses.utils.Utils import Utils
 from responses.vectors_inform.Applicant import Applicant
 from responses.vectors_inform.MinimalPoints import MinimalPoints
 
 
 class VectorData:
     def __init__(self):
-        self.link = None
+        self.link_budget = None
+        self.link_contract = None
+        self.link_contract_abroad = None
+        self.link_separate = None
+        self.link_special = None
         self.budgetPlaces = None
         self.contractPlaces = None
         self.exams = None
         self.minimalPointsBudget = None
         self.minimalPointsContract = None
         self.vector = None
+
+    def get_link_contract(self):
+        return self.link_contract
+
+    def set_link_contract(self, value):
+        self.link_contract = value
+        return self
+
+    def get_link_contract_abroad(self):
+        return self.link_contract_abroad
+
+    def set_link_contract_abroad(self, value):
+        self.link_contract_abroad = value
+        return self
+
+    def get_link_separate(self):
+        return self.link_separate
+
+    def set_link_separate(self, value):
+        self.link_separate = value
+        return self
+
+    def get_link_special(self):
+        return self.link_special
+
+    def set_link_special(self, value):
+        self.link_special = value
+        return self
 
     def set_vector(self, vector: list):
         self.vector = vector
@@ -22,11 +55,11 @@ class VectorData:
     def get_vector(self):
         return self.vector
 
-    def get_link_to_lists(self) -> str:
-        return self.link
+    def get_link_budget(self) -> str:
+        return self.link_budget
 
-    def set_link_to_lists(self, link_to_lists: str) -> 'VectorData':
-        self.link = link_to_lists
+    def set_link_budget(self, link_to_lists: str) -> 'VectorData':
+        self.link_budget = link_to_lists
         return self
 
     def get_budget_places(self) -> int:
@@ -70,7 +103,7 @@ class VectorData:
         return d
 
     @staticmethod
-    def parse_json(vector_name: str) -> 'VectorData':
+    def parse_json(vector_name: str, t: str) -> 'VectorData':
         vector_path = "../Python/vectors/all_vectors_information.json"
         with open(vector_path, "r") as file:
             data = json.load(file)
@@ -81,12 +114,32 @@ class VectorData:
             set_minimal_points_contract(atr["minimalPointsContract"]).\
             set_budget_places(atr["budgetPlaces"]).\
             set_contract_places(atr["contractPlaces"]).\
-            set_link_to_lists(atr["link"])
-        vector_path = "../Python/vectors/" + vector_name + ".json"
+            set_link_budget(atr["link_budget"]). \
+            set_link_special(atr["link_special"]). \
+            set_link_separate(atr["link_separate"]).\
+            set_link_contract(atr["link_contract"]).\
+            set_link_contract_abroad(atr["link_contract_abroad"])
+        vector_path = "../Python/vectors/" + vector_name + "&" + t + ".json"
         if not os.path.exists(vector_path):
             return VectorData()
         with open(vector_path, encoding="utf-8") as file1:
+            with open("../Python/vectors/all_vectors_information.json", encoding="utf-8") as file2:
+                d = json.load(file2)
+                match t:
+                    case "budget":
+                        url = d[vector_name]["link_budget"]
+                    case "contract":
+                        url = d[vector_name]["link_contract"]
+                    case "special":
+                        url = d[vector_name]["link_special"]
+                    case "separate":
+                        url = d[vector_name]["link_separate"]
+                    case "contract_abroad":
+                        url = d[vector_name]["link_contract_abroad"]
+                    case _:
+                        return VectorData()
             data = json.load(file1)
+            Utils.update_json(data["update"], vector_path, url)
         abit_list = []
         for count, item in enumerate(data["list"]):
             abit = Applicant()

@@ -16,11 +16,12 @@ from responses.vectors_inform.VectorData import VectorData
 app = FastAPI()
 
 
+# TODO Сделать парсинг всех списков
 @app.get("/find/{tg_id}")
-def find(vtr: str, tg_id: int, snils: str = "", uuid: str = Header(...)):
+def find(vtr: str, type_of_list: str, tg_id: int, snils: str = "", uuid: str = Header(...)):
     result = ResponseType().set_vector_name(vtr).set_uuid(uuid).set_tg_id(tg_id)
-    result.set_vector_data(VectorData.parse_json(vtr)). \
-        set_applicant_data(Utils.parse_json(vtr, snils))
+    result.set_vector_data(VectorData.parse_json(vtr, type_of_list)). \
+        set_applicant_data(Utils.parse_json(vtr, snils, type_of_list))
     return JSONResponse(
         status_code=status.HTTP_200_OK if result.get_applicant_date() is not None or result.get_vector_data() is not None else status.HTTP_400_BAD_REQUEST,
         content=result.to_dict()
@@ -38,9 +39,9 @@ def get_all(uuid: str = Header(...)):
 
 
 @app.get("/csv/{tg_id}")
-def download_csv(vtr: str, tg_id: int, uuid: str = Header(...)):
+def download_csv(vtr: str, type_of_list: str, tg_id: int, uuid: str = Header(...)):
     filename = vtr + "-" + str(tg_id) + ".csv"
-    csv_service.convert_json_to_csv(r"../Python/vectors/" + vtr + ".json",
+    csv_service.convert_json_to_csv(r"../Python/vectors/" + vtr + "&" + type_of_list + ".json",
                                     r"../Python/csv_files/" + filename)
     response = ResponseType().set_uuid(uuid).set_tg_id(tg_id).set_vector_name(vtr)
     with open(r"../Python/csv_files/" + filename, "rb") as file:
@@ -56,10 +57,10 @@ def download_csv(vtr: str, tg_id: int, uuid: str = Header(...)):
 
 
 @app.get("/html/{tg_id}")
-def download_html(vtr: str, tg_id: int, uuid: str = Header(...)):
+def download_html(vtr: str, type_of_list: str, tg_id: int, uuid: str = Header(...)):
     filename = vtr + "-" + str(tg_id) + ".html"
-    html_service.convert_json_to_html(r"../Python/vectors/" + vtr + ".json",
-                                    r"../Python/html_files/" + filename)
+    html_service.convert_json_to_html(r"../Python/vectors/" + vtr + "&" + type_of_list + ".json",
+                                      r"../Python/html_files/" + filename)
     response = ResponseType().set_uuid(uuid).set_tg_id(tg_id).set_vector_name(vtr)
     with open(r"../Python/html_files/" + filename, "rb") as file:
         file_bytes = file.read()

@@ -12,14 +12,20 @@ from responses.vectors_inform.Applicant import Applicant
 
 class Utils:
     @staticmethod
-    def parse_json(vector_name: str, snils: str) -> 'ApplicantData':
-        vector_path = "../Python/vectors/" + vector_name + ".json"
+    def parse_json(vector_name: str, snils: str, t: str) -> 'ApplicantData':
+        vector_path = "../Python/vectors/" + vector_name + "&" + t + ".json"
         if not os.path.exists(vector_path):
             return ApplicantData()
         with open(vector_path, encoding="utf-8") as file:
             with open("../Python/vectors/all_vectors_information.json", encoding="utf-8") as file1:
                 d = json.load(file1)
-                url = d[vector_name]["link"]
+                match t:
+                    case "budget": url = d[vector_name]["link_budget"]
+                    case "contract": url = d[vector_name]["link_contract"]
+                    case "special": url = d[vector_name]["link_special"]
+                    case "separate": url = d[vector_name]["link_separate"]
+                    case "contract_abroad": url = d[vector_name]["link_contract_abroad"]
+                    case _: return ApplicantData()
             data = json.load(file)
             Utils.update_json(data["update"], vector_path, url)
         actuality_date = data["update"]

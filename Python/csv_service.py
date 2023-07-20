@@ -3,8 +3,6 @@ import json
 
 
 def convert_json_to_csv(json_file_path, csv_file_path):
-    russian_columns = ["Снилс", "БВИ", "Дополнительные баллы", "Баллы за экзамены", "Предметы сдачи",
-                       "Оригиналы документов", "Согласие на зачисление"]
     with open(json_file_path, 'r', encoding="utf-8") as json_file:
         data = json.load(json_file)
     with open(csv_file_path, 'w', newline='', encoding="utf-8") as csv_file:
