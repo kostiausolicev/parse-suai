@@ -108,20 +108,30 @@ class VectorData:
         with open(vector_path, "r") as file:
             data = json.load(file)
         result = VectorData()
-        atr = data[vector_name]
-        result.set_exams(atr["exams"]).\
-            set_minimal_points_budget(atr["minimalPointsBudget"]).\
-            set_minimal_points_contract(atr["minimalPointsContract"]).\
-            set_budget_places(atr["budgetPlaces"]).\
-            set_contract_places(atr["contractPlaces"]).\
-            set_link_budget(atr["link_budget"]). \
-            set_link_special(atr["link_special"]). \
-            set_link_separate(atr["link_separate"]).\
-            set_link_contract(atr["link_contract"]).\
-            set_link_contract_abroad(atr["link_contract_abroad"])
+        try:
+            atr = data[vector_name]
+            result.set_exams(atr["exams"]).\
+                set_minimal_points_budget(atr["minimalPointsBudget"]).\
+                set_minimal_points_contract(atr["minimalPointsContract"]).\
+                set_budget_places(atr["budgetPlaces"]).\
+                set_contract_places(atr["contractPlaces"]).\
+                set_link_budget(atr["link_budget"]). \
+                set_link_special(atr["link_special"]). \
+                set_link_separate(atr["link_separate"]).\
+                set_link_contract(atr["link_contract"]).\
+                set_link_contract_abroad(atr["link_contract_abroad"])
+        except KeyError:
+            return result
         vector_path = "../Python/vectors/" + vector_name + "&" + t + ".json"
         if not os.path.exists(vector_path):
-            return VectorData()
+            match t:
+                case "budget": url = result.get_link_budget()
+                case "contract": url = result.get_link_contract()
+                case "special": url = result.get_link_special()
+                case "separate": url = result.get_link_separate()
+                case "contract_abroad": url = result.get_link_contract_abroad()
+                case _: return VectorData()
+            Utils.parse_to_json(vector_path, url)
         with open(vector_path, encoding="utf-8") as file1:
             with open("../Python/vectors/all_vectors_information.json", encoding="utf-8") as file2:
                 d = json.load(file2)
