@@ -3,7 +3,6 @@ package ru.kosti;
 import lombok.*;
 import ru.kosti.applicant.ApplicantData;
 import ru.kosti.vector_inform.VectorData;
-import ru.kosti.vector_list.VectorList;
 
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class ResponseType {
         return applicantData != null;
     }
 
-    public boolean hasVectorInformation() {
+    public boolean hasVectorData() {
         return vectorData != null;
     }
 

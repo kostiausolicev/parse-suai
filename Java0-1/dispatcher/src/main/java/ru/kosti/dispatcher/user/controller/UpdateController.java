@@ -33,8 +33,7 @@ public class UpdateController {
                 case "/find", "Поиск" -> consumerTextService.commandFindHandler(update);
                 case "/minimal", "Мин баллы прошлых лет" -> consumerTextService.commandMinimalPointsHandler(update);
                 case "/about", "О боте" -> consumerTextService.commandAboutHandler(update);
-                case "/help", "Помощь" -> consumerTextService.commandHHelpHandler(update);
-//                case "покажи студента гуап" ->
+                case "/help", "Помощь" -> consumerTextService.commandHelpHandler(update);
                 default -> consumerTextService.distributeOtherTextMessages(update);
             };
         }

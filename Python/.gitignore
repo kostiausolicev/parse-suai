@@ -4,6 +4,7 @@ vectors/
 venv/
 
 __pycache__/
+parse_vectors_script.py
 *.pyc
 *.pyo
 *.pyd

@@ -10,7 +10,7 @@ class ResponseType:
         self.vectorName: str = None
         self.applicantData: ApplicantData = None
         self.vectorData: VectorData = None
-        self.vectorList: VectorList = None
+        self.vectorList: list = None
         self.file: list = None
 
     def has_vectors_list(self):

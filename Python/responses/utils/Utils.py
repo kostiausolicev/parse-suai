@@ -20,11 +20,11 @@ class Utils:
             with open("../Python/vectors/all_vectors_information.json", encoding="utf-8") as file1:
                 d = json.load(file1)
                 match t:
-                    case "budget": url = d[vector_name]["link_budget"]
-                    case "contract": url = d[vector_name]["link_contract"]
-                    case "special": url = d[vector_name]["link_special"]
-                    case "separate": url = d[vector_name]["link_separate"]
-                    case "contract_abroad": url = d[vector_name]["link_contract_abroad"]
+                    case "budget": url = d[vector_name]["linkBudget"]
+                    case "contract": url = d[vector_name]["linkContract"]
+                    case "special": url = d[vector_name]["linkSpecial"]
+                    case "separate": url = d[vector_name]["linkSeparate"]
+                    case "contract_abroad": url = d[vector_name]["linkContractAbroad"]
                     case _: return ApplicantData()
             data = json.load(file)
             Utils.update_json(data["update"], vector_path, url)
@@ -53,6 +53,8 @@ class Utils:
                             applicant.set_exams_points(int(a[4]))
                         case "Баллы за достижения":
                             applicant.set_additional_points(int(a[5]))
+                        case "Оригинал документа об образовании":
+                            applicant.set_original_documents(True if a[6] == "Да" else False)
                         case _:
                             continue
                 r.append(applicant.to_dict())

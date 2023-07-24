@@ -8,44 +8,47 @@ from responses.vectors_inform.MinimalPoints import MinimalPoints
 
 class VectorData:
     def __init__(self):
-        self.link_budget = None
-        self.link_contract = None
-        self.link_contract_abroad = None
-        self.link_separate = None
-        self.link_special = None
+        self.name = None
+        self.linkBudget = None
+        self.linkContract = None
+        self.linkContractAbroad = None
+        self.linkSeparate = None
+        self.linkSpecial = None
         self.budgetPlaces = None
+        self.separatePlaces = None
+        self.specialPlaces = None
         self.contractPlaces = None
+        self.contractAbroadPlaces = None
         self.exams = None
         self.minimalPointsBudget = None
-        self.minimalPointsContract = None
         self.vector = None
 
     def get_link_contract(self):
-        return self.link_contract
+        return self.linkContract
 
     def set_link_contract(self, value):
-        self.link_contract = value
+        self.linkContract = value
         return self
 
     def get_link_contract_abroad(self):
-        return self.link_contract_abroad
+        return self.linkContractAbroad
 
     def set_link_contract_abroad(self, value):
-        self.link_contract_abroad = value
+        self.linkContractAbroad = value
         return self
 
     def get_link_separate(self):
-        return self.link_separate
+        return self.linkSeparate
 
     def set_link_separate(self, value):
-        self.link_separate = value
+        self.linkSeparate = value
         return self
 
     def get_link_special(self):
-        return self.link_special
+        return self.linkSpecial
 
     def set_link_special(self, value):
-        self.link_special = value
+        self.linkSpecial = value
         return self
 
     def set_vector(self, vector: list):
@@ -56,10 +59,10 @@ class VectorData:
         return self.vector
 
     def get_link_budget(self) -> str:
-        return self.link_budget
+        return self.linkBudget
 
     def set_link_budget(self, link_to_lists: str) -> 'VectorData':
-        self.link_budget = link_to_lists
+        self.linkBudget = link_to_lists
         return self
 
     def get_budget_places(self) -> int:
@@ -90,37 +93,31 @@ class VectorData:
         self.minimalPointsBudget = minimal_points_budget
         return self
 
-    def get_minimal_points_contract(self) -> MinimalPoints:
-        return self.minimalPointsContract
-
-    def set_minimal_points_contract(self, minimal_points_contract: MinimalPoints) -> 'VectorData':
-        self.minimalPointsContract = minimal_points_contract
-        return self
-
     def to_dict(self) -> dict:
         d = vars(self)
         d["vector"] = [i.to_dict() for i in self.vector] if self.vector is not None else None
         return d
 
     @staticmethod
-    def parse_json(vector_name: str, t: str) -> 'VectorData':
+    def parse_json(vector_name: str, t: str = None) -> 'VectorData':
         vector_path = "../Python/vectors/all_vectors_information.json"
-        with open(vector_path, "r") as file:
+        with open(vector_path, "r", encoding="utf-8") as file:
             data = json.load(file)
         result = VectorData()
         try:
             atr = data[vector_name]
             result.set_exams(atr["exams"]).\
                 set_minimal_points_budget(atr["minimalPointsBudget"]).\
-                set_minimal_points_contract(atr["minimalPointsContract"]).\
                 set_budget_places(atr["budgetPlaces"]).\
                 set_contract_places(atr["contractPlaces"]).\
-                set_link_budget(atr["link_budget"]). \
-                set_link_special(atr["link_special"]). \
-                set_link_separate(atr["link_separate"]).\
-                set_link_contract(atr["link_contract"]).\
-                set_link_contract_abroad(atr["link_contract_abroad"])
+                set_link_budget(atr["linkBudget"]). \
+                set_link_special(atr["linkSpecial"]). \
+                set_link_separate(atr["linkSeparate"]).\
+                set_link_contract(atr["linkContract"]).\
+                set_link_contract_abroad(atr["linkContractAbroad"])
         except KeyError:
+            return result
+        if not t:
             return result
         vector_path = "../Python/vectors/" + vector_name + "&" + t + ".json"
         if not os.path.exists(vector_path):
@@ -137,15 +134,15 @@ class VectorData:
                 d = json.load(file2)
                 match t:
                     case "budget":
-                        url = d[vector_name]["link_budget"]
+                        url = d[vector_name]["linkBudget"]
                     case "contract":
-                        url = d[vector_name]["link_contract"]
+                        url = d[vector_name]["linkContract"]
                     case "special":
-                        url = d[vector_name]["link_special"]
+                        url = d[vector_name]["linkSpecial"]
                     case "separate":
-                        url = d[vector_name]["link_separate"]
+                        url = d[vector_name]["linkSeparate"]
                     case "contract_abroad":
-                        url = d[vector_name]["link_contract_abroad"]
+                        url = d[vector_name]["linkContractAbroad"]
                     case _:
                         return VectorData()
             data = json.load(file1)

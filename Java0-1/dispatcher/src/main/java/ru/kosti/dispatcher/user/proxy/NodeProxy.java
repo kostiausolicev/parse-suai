@@ -12,10 +12,20 @@ public interface NodeProxy {
     ResponseEntity<ResponseType> getApplicantInformation(
             @RequestParam("vtr") String vtr,
             @RequestParam("snils") String snils,
+            @RequestParam("type_of_list") String type_of_list,
+            @PathVariable long telegramId);
+
+    @GetMapping("/find_vector_inform/{telegramId}")
+    ResponseEntity<ResponseType> getVectorData(
+            @RequestParam("vtr") String vtr,
             @PathVariable long telegramId);
 
     @GetMapping(value = "/all_vectors")
-    ResponseEntity<ResponseType> getAllVectorsInformation(
+    ResponseEntity<ResponseType> getAllVectorsInformation();
+
+    @GetMapping(value = "/all_vectors_lists")
+    ResponseEntity<ResponseType> getAllVectorsInformation2(
+            @RequestParam String vector
     );
 
     @PostMapping(value = "/check_user/{telegramId}")

@@ -23,10 +23,11 @@ public class PythonServiceImpl implements PythonService {
 
     @Override
     // TODO Сделать аннотации для проверки uuid кодов, для красоты
-    public ResponseEntity<ResponseType> getApplicantInformation(String vtr, String snils, long telegramId) {
+    // TODO Сделать более подробную проверку входящих соединений
+    public ResponseEntity<ResponseType> getApplicantInformation(String vtr, String snils, String type_of_list, long telegramId) {
         var uuid = UUID.randomUUID().toString();
         appUserDAO.updateUuidByTelegramId(uuid, telegramId);
-        var response = proxy.getApplicantInformation(vtr, snils, uuid, telegramId);
+        var response = proxy.getApplicantInformation(vtr, snils, type_of_list, uuid, telegramId);
         if (response.getStatusCode() != HttpStatus.OK || !response.hasBody()) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         if (!appUserDAO.findAppUserByTelegramId(telegramId).getUuid().equals(response.getBody().getUuid())) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return response;
@@ -36,6 +37,16 @@ public class PythonServiceImpl implements PythonService {
     public ResponseEntity<ResponseType> getVectorsList() {
         var uuid = UUID.randomUUID().toString();
         var response = proxy.getVectorsList(uuid);
+        if (uuid.equals(Objects.requireNonNull(response.getBody()).getUuid())) {
+            return response;
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    public ResponseEntity<ResponseType> getVectorsList1(String vtr) {
+        var uuid = UUID.randomUUID().toString();
+        var response = proxy.getVectorList1(uuid, vtr);
         if (uuid.equals(Objects.requireNonNull(response.getBody()).getUuid())) {
             return response;
         }
@@ -56,6 +67,16 @@ public class PythonServiceImpl implements PythonService {
     public ResponseEntity<ResponseType> getHtmlFile(String vtr, long telegramId) {
         var uuid = UUID.randomUUID().toString();
         var response = proxy.getHtmlFile(vtr, uuid, telegramId);
+        if (uuid.equals(Objects.requireNonNull(response.getBody()).getUuid())) {
+            return response;
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    public ResponseEntity<ResponseType> getVectorData(String vtr, long telegramId) {
+        var uuid = UUID.randomUUID().toString();
+        var response = proxy.getVectorData(uuid, vtr, telegramId);
         if (uuid.equals(Objects.requireNonNull(response.getBody()).getUuid())) {
             return response;
         }

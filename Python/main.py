@@ -16,7 +16,6 @@ from responses.vectors_inform.VectorData import VectorData
 app = FastAPI()
 
 
-# TODO Сделать парсинг всех списков
 @app.get("/find/{tg_id}")
 def find(vtr: str, type_of_list: str, tg_id: int, snils: str = "", uuid: str = Header(...)):
     result = ResponseType().set_vector_name(vtr).set_uuid(uuid).set_tg_id(tg_id)
@@ -28,10 +27,28 @@ def find(vtr: str, type_of_list: str, tg_id: int, snils: str = "", uuid: str = H
     )
 
 
+@app.get("/find_vector_inform/{tg_id}")
+def find1(vtr: str, tg_id: int, uuid: str = Header(...)):
+    result = ResponseType().set_vector_name(vtr).set_uuid(uuid).set_tg_id(tg_id)
+    result.set_vector_data(VectorData.parse_json(vtr))
+    return JSONResponse(
+        status_code=status.HTTP_200_OK if result.get_applicant_date() is not None or result.get_vector_data() is not None else status.HTTP_400_BAD_REQUEST,
+        content=result.to_dict()
+    )
+
+
 @app.get("/all_vectors")
 def get_all(uuid: str = Header(...)):
-    result = ResponseType().set_uuid(uuid). \
-        set_vector_list(VectorList())
+    result = ResponseType().set_uuid(uuid).set_vector_list(VectorList.get_vectors())
+    return JSONResponse(
+        status_code=status.HTTP_200_OK if result.has_vectors_list() is not None else status.HTTP_400_BAD_REQUEST,
+        content=result.to_dict()
+    )
+
+
+@app.get("/all_vectors_lists")
+def get_all_ability(vtr: str, uuid: str = Header(...)):
+    result = ResponseType().set_uuid(uuid).set_vector_list(VectorList.get_ability_lists(vtr))
     return JSONResponse(
         status_code=status.HTTP_200_OK if result.has_vectors_list() is not None else status.HTTP_400_BAD_REQUEST,
         content=result.to_dict()
@@ -75,5 +92,4 @@ def download_html(vtr: str, type_of_list: str, tg_id: int, uuid: str = Header(..
 
 
 if __name__ == "__main__":
-    # Utils.parse_to_json("09_03_02", "https://priem.guap.ru/lists/1_18_1_1_1_f")
     uvicorn.run(app, host="localhost", port=8000)

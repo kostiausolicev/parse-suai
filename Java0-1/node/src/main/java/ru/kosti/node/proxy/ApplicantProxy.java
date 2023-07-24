@@ -14,11 +14,24 @@ public interface ApplicantProxy {
     ResponseEntity<ResponseType> getApplicantInformation(
             @RequestParam("vtr") String vector,
             @RequestParam("snils") String snils,
+            @RequestParam("type_of_list") String type_of_list,
             @RequestHeader String uuid,
+            @PathVariable long telegramId);
+
+    @GetMapping("/find_vector_inform/{telegramId}")
+    ResponseEntity<ResponseType> getVectorData(
+            @RequestHeader String uuid,
+            @RequestParam("vtr") String vtr,
             @PathVariable long telegramId);
 
     @GetMapping(value = "/all_vectors")
     ResponseEntity<ResponseType> getVectorsList(@RequestHeader String uuid);
+
+    @GetMapping(value = "/all_vectors_lists")
+    ResponseEntity<ResponseType> getVectorList1(
+            @RequestHeader String uuid,
+            @RequestParam String vtr
+    );
 
     @GetMapping(value = "/csv/{telegramId}")
     ResponseEntity<ResponseType> getCsvFile(

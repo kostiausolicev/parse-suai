@@ -17,14 +17,27 @@ public class PythonServiceController {
     public ResponseEntity<ResponseType> getApplicantInformation(
             @RequestParam("vtr") String vtr,
             @RequestParam("snils") String snils,
+            @RequestParam("type_of_list") String type_of_list,
             @PathVariable long telegramId
     ) {
-        return pythonService.getApplicantInformation(vtr, snils, telegramId);
+        return pythonService.getApplicantInformation(vtr, snils, type_of_list, telegramId);
+    }
+
+    @GetMapping("/find_vector_inform/{telegramId}")
+    ResponseEntity<ResponseType> getVectorData(
+            @RequestParam("vtr") String vtr,
+            @PathVariable long telegramId) {
+        return pythonService.getVectorData(vtr, telegramId);
     }
 
     @GetMapping("/all_vectors")
     public ResponseEntity<ResponseType> getAllVectorsInformation() {
         return pythonService.getVectorsList();
+    }
+
+    @GetMapping("all_vectors_lists")
+    public ResponseEntity<ResponseType> getAllVectorsInformation2(@RequestParam String vtr) {
+        return pythonService.getVectorsList1(vtr);
     }
 
     @GetMapping(value = "/csv/{telegramId}")

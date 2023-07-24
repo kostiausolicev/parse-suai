@@ -1,4 +1,4 @@
-package ru.kosti.applicant;
+package ru.kosti.vector_inform;
 
 import lombok.*;
 

@@ -22,6 +22,12 @@ public class MessageUtils {
         var parseData = new HashMap<String, String>();
         parseData.put("vector", rawData[0]);
         parseData.put("action", rawData[1]);
+        try {
+            parseData.put("list", rawData[2]);
+        }
+        catch (ArrayIndexOutOfBoundsException e) {
+            return parseData;
+        }
         return parseData;
     }
 }
