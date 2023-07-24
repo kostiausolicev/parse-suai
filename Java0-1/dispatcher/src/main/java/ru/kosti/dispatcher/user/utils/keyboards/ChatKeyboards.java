@@ -39,12 +39,6 @@ public class ChatKeyboards {
         return keyboard;
     }
 
-    public SendMessage getWaitForSnilsKeyboard(Update update) {
-        var message = createMessage(update, "Введите снилс или выберите соответсвующее действие на клавиатуре");
-        message.setReplyMarkup(getWaitForSnilsMarkup(update));
-        return message;
-    }
-
     public ReplyKeyboardMarkup getWaitForSnilsMarkup(Update update) {
         long telegramId = update.getMessage().getChatId();
         var snils = proxy.getUserColumn(telegramId, UserColumn.SNILS).getBody();

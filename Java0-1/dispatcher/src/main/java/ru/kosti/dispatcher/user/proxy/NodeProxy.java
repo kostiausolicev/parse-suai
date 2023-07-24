@@ -25,7 +25,7 @@ public interface NodeProxy {
 
     @GetMapping(value = "/all_vectors_lists")
     ResponseEntity<ResponseType> getAllVectorsInformation2(
-            @RequestParam String vector
+            @RequestParam("vtr") String vector
     );
 
     @PostMapping(value = "/check_user/{telegramId}")

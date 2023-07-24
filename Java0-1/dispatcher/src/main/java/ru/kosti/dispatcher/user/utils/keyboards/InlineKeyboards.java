@@ -12,7 +12,6 @@ import ru.kosti.dispatcher.user.utils.emuns.CallbackActions;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO Сделать клавиатуру выбора списка для парсинга
 @Component
 public class InlineKeyboards {
     private final NodeProxy proxy;
