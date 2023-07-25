@@ -37,10 +37,12 @@ public interface ApplicantProxy {
     ResponseEntity<ResponseType> getCsvFile(
             @RequestParam("vtr") String vector,
             @RequestHeader String uuid,
-            @PathVariable long telegramId);
+            @PathVariable long telegramId,
+            @RequestParam String type_of_list);
 
     @GetMapping(value = "/html/{telegramId}")
     ResponseEntity<ResponseType> getHtmlFile(@RequestParam("vtr") String vector,
                                              @RequestHeader String uuid,
-                                             @PathVariable long telegramId);
+                                             @PathVariable long telegramId,
+                                             @RequestParam String type_of_list);
 }

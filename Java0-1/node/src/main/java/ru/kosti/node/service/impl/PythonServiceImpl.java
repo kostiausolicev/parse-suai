@@ -54,9 +54,9 @@ public class PythonServiceImpl implements PythonService {
     }
 
     @Override
-    public ResponseEntity<ResponseType> getCsvFile(String vtr, long telegramId) {
+    public ResponseEntity<ResponseType> getCsvFile(String vtr, long telegramId, String type_of_list) {
         var uuid = UUID.randomUUID().toString();
-        var response = proxy.getCsvFile(vtr, uuid, telegramId);
+        var response = proxy.getCsvFile(vtr, uuid, telegramId, type_of_list);
         if (uuid.equals(Objects.requireNonNull(response.getBody()).getUuid())) {
             return response;
         }
@@ -64,9 +64,9 @@ public class PythonServiceImpl implements PythonService {
     }
 
     @Override
-    public ResponseEntity<ResponseType> getHtmlFile(String vtr, long telegramId) {
+    public ResponseEntity<ResponseType> getHtmlFile(String vtr, long telegramId, String type_of_list) {
         var uuid = UUID.randomUUID().toString();
-        var response = proxy.getHtmlFile(vtr, uuid, telegramId);
+        var response = proxy.getHtmlFile(vtr, uuid, telegramId, type_of_list);
         if (uuid.equals(Objects.requireNonNull(response.getBody()).getUuid())) {
             return response;
         }

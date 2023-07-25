@@ -5,11 +5,11 @@ class Applicant:
         self.allPoints = None
         self.examsPoints = None
         self.additionalPoints = None  # дополнительные баллы
+        self.originalDocuments = False
+        self.consent = False
         self.bvi = False
         self.points = None  # баллы за экзамены
         self.namesProfile = None  # названия предметов
-        self.originalDocuments = False
-        self.consent = False
 
     def get_priority(self):
         return self.priority

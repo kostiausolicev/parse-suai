@@ -57,14 +57,10 @@ public class ConsumerCallbackServiceImpl implements ConsumerCallbackService {
             }
             case FIND -> {
                 // Ищем позицию человека в рейтинге
-                var list = switch (rawData.get("list")) {
-                    case "Контракт" -> "contract";
-                    case "Контракт иностранцы" -> "contractAbroad";
-                    case "Особая квота" -> "special";
-                    case "Отдельная квота" -> "separate";
-                    default -> "budget";
-                };
-                answer.setSendMessage(findAction(update, vector, list, telegramId));
+                var list = convert(rawData);
+                var m = findAction(update, vector, list, telegramId);
+                m.setReplyMarkup(inlineKeyboards.webAppKeyboard(vector, list));
+                answer.setSendMessage(m);
                 proxy.updateInformation(telegramId, UserColumn.STATES, SEND);
             }
             case CHOOSE_LIST -> {
@@ -72,12 +68,16 @@ public class ConsumerCallbackServiceImpl implements ConsumerCallbackService {
                 proxy.updateInformation(telegramId, UserColumn.STATES, FIND);
             }
             case WAIT_SCV -> {
-                answer.setSendDocument(getFile(telegramId, vector, "csv"));
+                var list = convert(rawData);
+                answer.setSendDocument(getFile(telegramId, vector, "csv", list));
                 proxy.updateInformation(telegramId, UserColumn.STATES, BASE);
+
             }
             case WAIT_HTML -> {
-                answer.setSendDocument(getFile(telegramId, vector, "html"));
+                var list = convert(rawData);
+                answer.setSendDocument(getFile(telegramId, vector, "html", list));
                 proxy.updateInformation(telegramId, UserColumn.STATES, BASE);
+
             }
             case CANSEL -> {
                 answer.setSendMessage(createMessage(update, "Окей!"));
@@ -95,15 +95,26 @@ public class ConsumerCallbackServiceImpl implements ConsumerCallbackService {
     private SendMessage findAction(Update update, String vector, String list, long telegramId) {
         var snils = proxy.getUserColumn(telegramId, UserColumn.SNILS).getBody() == null ? "0" : proxy.getUserColumn(telegramId, UserColumn.SNILS).getBody();
         var response = getBody(proxy.getApplicantInformation(vector, snils, list, telegramId));
-        if (response == null || !response.hasApplicantData()) return createMessage(update, "Что-то пошло не так");
+        if (response == null || !response.hasApplicantData() || !response.hasVectorData()) return createMessage(update, "Что-то пошло не так");
         var applicantData = response.getApplicantData();
+        var vectorData = response.getVectorData();
         StringBuilder text;
         text = new StringBuilder();
+        int places = switch (list) {
+            case "budget" -> vectorData.getBudgetPlaces();
+            case "contract" -> vectorData.getContractPlaces();
+            case "special" -> vectorData.getSpecialPlaces();
+            case "separate" -> vectorData.getSeparatePlaces();
+            case "contractAbroad" -> vectorData.getContractAbroadPlaces();
+            default -> -1;
+        };
         text.append("Данные актуальны на: ")
                 .append(applicantData.getActuality_date())
                 .append("\nВаша позиция на направление ")
                 .append(vector).append(" равна: ")
-                .append(applicantData.getPosition());
+                .append(applicantData.getPosition())
+                .append("\nМест на этом направлении в выбраном списке: ")
+                .append(places);
         return createMessage(update, text.toString());
     }
 
@@ -122,13 +133,13 @@ public class ConsumerCallbackServiceImpl implements ConsumerCallbackService {
         return createMessage(update, text.toString());
     }
 
-    private SendDocument getFile(long telegramId, String vector, String type) {
+    private SendDocument getFile(long telegramId, String vector, String type, String type_of_list) {
         var document = new SendDocument();
         document.setChatId(telegramId);
         byte[] file;
         ResponseEntity<ResponseType> response;
-        if (type.equals("csv")) response = proxy.getCsvFile(vector, telegramId);
-        else response = proxy.getHtmlFile(vector, telegramId);
+        if (type.equals("csv")) response = proxy.getCsvFile(vector, type_of_list, telegramId);
+        else response = proxy.getHtmlFile(vector, type_of_list, telegramId);
         if (response.getStatusCode() != HttpStatus.OK || !response.hasBody() || response.getBody() == null
                 || !response.getBody().hasFile()) return document;
         file = response.getBody().getFile();
@@ -159,12 +170,6 @@ public class ConsumerCallbackServiceImpl implements ConsumerCallbackService {
                     answer.setSendDocument(d);
                 }
             }
-            case SEND_RESULTS_STATE -> {
-                var k = inlineKeyboards.webAppKeyboard(vector);
-                var m = answer.getSendMessage();
-                m.setReplyMarkup(k);
-                answer.setSendMessage(m);
-            }
             case FIND_STATE -> {
                 var k = inlineKeyboards.getChooseListForParseKeyboard(vector);
                 var m = answer.getSendMessage();
@@ -173,5 +178,15 @@ public class ConsumerCallbackServiceImpl implements ConsumerCallbackService {
             }
         }
         return answer;
+    }
+
+    private String convert(Map<String, String> rawData) {
+        return switch (rawData.get("list")) {
+            case "Контракт" -> "contract";
+            case "Контракт иностранцы" -> "contractAbroad";
+            case "Особая квота" -> "special";
+            case "Отдельная квота" -> "separate";
+            default -> "budget";
+        };
     }
 }

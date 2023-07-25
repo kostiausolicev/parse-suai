@@ -43,14 +43,16 @@ public class PythonServiceController {
     @GetMapping(value = "/csv/{telegramId}")
     public ResponseEntity<ResponseType> getCsvFile(
             @RequestParam("vtr") String vtr,
+            @RequestParam("type_of_list") String type_of_list,
             @PathVariable long telegramId) {
-        return pythonService.getCsvFile(vtr, telegramId);
+        return pythonService.getCsvFile(vtr, telegramId, type_of_list);
     }
 
     @GetMapping(value = "/html/{telegramId}")
     ResponseEntity<ResponseType> getHtmlFile(
             @RequestParam("vtr") String vtr,
-            @PathVariable long telegramId) {
-        return pythonService.getHtmlFile(vtr, telegramId);
+            @PathVariable long telegramId,
+            @RequestParam("type_of_list") String type_of_list) {
+        return pythonService.getHtmlFile(vtr, telegramId, type_of_list);
     }
 }

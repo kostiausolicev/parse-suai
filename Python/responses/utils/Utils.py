@@ -39,6 +39,7 @@ class Utils:
     def parse_to_json(file_name: str, url: str):
         def conv_to_ap_obj(h: list, s: list):
             r = []
+            snilses = set()
             for a in s:
                 applicant = Applicant()
                 for head in h:
@@ -57,6 +58,9 @@ class Utils:
                             applicant.set_original_documents(True if a[6] == "Да" else False)
                         case _:
                             continue
+                if applicant.snils in snilses:
+                    continue
+                snilses.add(applicant.snils)
                 r.append(applicant.to_dict())
             return r
 

@@ -54,10 +54,12 @@ public interface NodeProxy {
     @GetMapping(value = "/csv/{telegramId}")
     ResponseEntity<ResponseType> getCsvFile(
             @RequestParam("vtr") String vtr,
+            @RequestParam("type_of_list") String type_of_list,
             @PathVariable long telegramId);
 
     @GetMapping(value = "/html/{telegramId}")
     ResponseEntity<ResponseType> getHtmlFile(
             @RequestParam("vtr") String vtr,
+            @RequestParam("type_of_list") String type_of_list,
             @PathVariable long telegramId);
 }

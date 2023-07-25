@@ -84,7 +84,7 @@ public class InlineKeyboards {
         return keyboard;
     }
 
-    public InlineKeyboardMarkup webAppKeyboard(String vector) {
+    public InlineKeyboardMarkup webAppKeyboard(String vector, String t) {
         var webApp = new WebAppInfo();
         webApp.setUrl("https://kostiausolicev.github.io/");
         var keyboard = new InlineKeyboardMarkup();
@@ -98,10 +98,10 @@ public class InlineKeyboards {
         row1.add(button1);
         var button2 = new InlineKeyboardButton();
         button2.setText("Скачать csv");
-        button2.setCallbackData(vector + ";" + CallbackActions.WAIT_SCV);
+        button2.setCallbackData(vector + ";" + CallbackActions.WAIT_SCV + ";" + t);
         var button3 = new InlineKeyboardButton();
         button3.setText("Скачать html");
-        button3.setCallbackData(vector + ";" + CallbackActions.WAIT_HTML);
+        button3.setCallbackData(vector + ";" + CallbackActions.WAIT_HTML + ";" + t);
         var button4 = new InlineKeyboardButton();
         button4.setText("Закончить обзор");
         button4.setCallbackData(vector + ";" + CallbackActions.CANSEL);
